@@ -44,13 +44,79 @@
 
 abstract class Kohana_ACL {
 
-	// Wildcard for all types
+	/**
+	 * @var object
+	 */
+	protected static $_instance;
+
+	/**
+	 * Return an instance of this class.
+	 *
+	 * @return  object
+	 */
+	public static function instance()
+	{
+		if ( ! static::$_instance instanceof static)
+		{
+			static::$_instance = new static;
+		}
+
+		return static::$_instance;
+	}
+
+	/**
+	 * Alias of the allowed method
+	 *
+	 * @return boolean
+	 */
+	public static function check($resource = NULL, $privilege = NULL, $exception = NULL)
+	{
+		return static::instance()->allowed($resource, $privilege, $exception);
+	}
+
+	/**
+	 * Alias of the logged_in method
+	 */
+	public static function logged_in()
+	{
+		return static::instance()->_auth->logged_in();
+	}
+
+	/**
+	 * Alias of the get_user method
+	 */
+	public static function get_user()
+	{
+		return static::instance()->_auth->get_user();
+	}
+
+	/**
+	 * Returns authentication instance
+	 */
+	public static function auth()
+	{
+		return static::instance()->_auth;
+	}
+
+	/**
+	 * Wildcard for all types
+	 */
 	const WILDCARD = '*';
+
+	/**
+	 * Authentication instance
+	 */
+	protected $_auth;
+
+	/**
+	 * Config object
+	 */
+	protected $_config;
 
 	/**
 	 * @var  array  Current role/resource/privilege being matched
 	 */
-	protected $command      = array();
+	protected $_command      = array();
 
 	/**
 	 * @var  array  ACL roles
@@ -66,6 +132,179 @@ abstract class Kohana_ACL {
 	 * @var  array  ACL permissions
 	 */
 	protected $_permissions = array();
+
+	/**
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->_config 		= Kohana::$config->load('acl');
+		$this->_guest_role 	= $this->_config['guest_role'];
+		$this->_auth 		= Auth::instance();
+
+		// Add Guest Role as role
+		if ( ! array_key_exists($this->_config['guest_role'], $this->_config['roles']))
+		{
+			$this->add_role($this->_config['guest_role']);
+		}
+
+		// Load ACL data
+		$this->load();
+	}
+
+	/**
+	 * Load ACL data (roles/resources/rules)
+	 *
+	 * This allows you to add context specific rules
+	 * roles and resources.
+	 *
+	 * @param  array|Kohana_Config  configiration data
+	 */
+	public function load()
+	{
+		$driver = (isset($this->config['data_source_driver']))
+			? $this->config['data_source_driver']
+			: 'config';
+
+		$driver = 'ACL_Source_'.UTF8::ucfirst($driver);
+
+		if ( ! class_exists($driver))
+		{
+			throw new ACL_Exception(__(
+				'Driver :driver not found.',
+				array(':driver' => $driver)
+			));
+		}
+
+		$data_source = new $driver;
+
+		if ( ! $data_source instanceof ACL_Source_Interface )
+		{
+			throw new ACL_Exception(__(
+				'Driver :driver not implemented ACL_Source_Interface.',
+				array(':driver' => $driver)
+			));
+		}
+
+		// Get data
+		$roles 		= $data_source->roles();
+		$resources 	= $data_source->resources();
+		$rules 		= $data_source->rules();
+
+		// Roles
+		foreach ($roles as $role => $parent)
+		{
+			$this->add_role($role, $parent);
+		}
+
+		// Resources
+		foreach ($resources as $resource => $parent)
+		{
+			$this->add_resource($resource, $parent);
+		}
+
+		// Rules
+		foreach (array('allow','deny') as $method)
+		{
+			if ( isset($rules[$method]) )
+			{
+				foreach ($rules[$method] as $rule)
+				{
+					// create variables
+					$role = $resource = $privilege = $assertion = NULL;
+
+					// extract variables from rule
+					extract($rule);
+
+					// create assert object
+					if ( $assertion )
+					{
+						if ( is_array($assertion))
+						{
+							$assertion = count($assertion) === 2
+								? new $assertion[0]($assertion[1])
+								: new $assertion[0];
+						}
+						else
+						{
+							$assertion = new $assertion;
+						}
+					}
+
+					// this is faster than calling $this->$method
+					if ( $method === 'allow')
+					{
+						$this->allow($role, $resource, $privilege, $assertion);
+					}
+					else
+					{
+						$this->deny($role, $resource, $privilege, $assertion);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Check if logged in user (or guest) has access to resource/privilege.
+	 *
+	 * @param   mixed     Resource
+	 * @param   string    Privilege
+	 * @param   boolean   Override exception handling set by config
+	 * @return  boolean   Is user allowed
+	 * @throws  A2_Exception   In exception modus, when user is not allowed
+	 */
+	public function allowed($resource = NULL, $privilege = NULL, $exception = NULL)
+	{
+		if ( ! is_bool($exception))
+		{
+			// take config value
+			$exception = $this->_config['exception'];
+		}
+
+		// retrieve user
+		$role = ($user = $this->_auth->get_user()) ? $user : $this->_config['guest_role'];
+
+		$result = $this->is_allowed($role,$resource,$privilege);
+
+		if ( ! $exception OR $result === TRUE )
+		{
+			return $result;
+		}
+		else
+		{
+			$resources = $privileges = $errors = array();
+
+			if ( $resource !== NULL)
+			{
+				$resources[] = $resource instanceof ACL_Resource_Interface
+					? $resource->get_resource_id()
+					: (string) $resource;
+			}
+
+			if ( $privilege !== NULL)
+			{
+				$privileges[] = $privilege;
+			}
+
+			$resources[]  = 'default';
+			$privileges[] = 'default';
+
+			foreach ( $resources as $r)
+			{
+				foreach ( $privileges as $p)
+				{
+					if ( $message = Kohana::message('acl', $r . '.' . $p))
+					{
+						throw new $this->_config['exception_type']($message);
+					}
+				}
+			}
+
+			// this only happens when someone has removed the 'default.default' error message from messages/a2.php
+			throw new ACL_Exception('No error messages defined');
+		}
+	}
 
 	/**
 	 * Add a new role.
@@ -331,7 +570,7 @@ abstract class Kohana_ACL {
 
 		foreach ( $roles as $role)
 		{
-			$this->command = array(
+			$this->_command = array(
 				'role'      => $role,
 				'resource'  => $resource,
 				'privilege' => $privilege
@@ -360,7 +599,7 @@ abstract class Kohana_ACL {
 			{
 				$allowed = $this->match($role, $resource, $privilege);
 
-				if ( $allowed === TRUE AND in_array(NULL, $this->command))
+				if ( $allowed === TRUE AND in_array(NULL, $this->_command))
 				{
 					// wildcard active - for each wildcard in the query, take every possible value
 
@@ -471,7 +710,7 @@ abstract class Kohana_ACL {
 					{
 						$match = $this->_permissions[$_role][$_resource][$_privilege];
 
-						if ( ! isset($match['assert']) || $match['assert']->assert($this, $this->command['role'], $this->command['resource'], $this->command['privilege']))
+						if ( ! isset($match['assert']) OR $match['assert']->assert($this, $this->_command['role'], $this->_command['resource'], $this->_command['privilege']))
 						{
 							$allowed = $match['allow'];
 							break 3;
@@ -486,6 +725,6 @@ abstract class Kohana_ACL {
 
 	public function __sleep()
 	{
-		return array('_roles','_resources','_permissions'); // no need to save the current command ($this->command)
+		return array('_roles','_resources','_permissions'); // no need to save the current _command ($this->_command)
 	}
 }
