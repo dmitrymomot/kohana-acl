@@ -6,7 +6,16 @@ return array(
 	 * Data source driver
 	 * config, database or any driver that implements ACL_Source_Interface
 	 */
-	'data_source_driver' => 'config',
+	'data_source_driver' => 'database',
+
+	/**
+	 * Default database tables
+	 */
+	'db_tables' => array(
+		'roles' 	=> 'roles',
+		'resources' => 'resources',
+		'rules' 	=> 'rules',
+	),
 
 	/**
 	 * Throws an exception when authorization fails.
@@ -66,14 +75,14 @@ return array(
 				'resource'  => 'blog',
 				'privilege' => 'read'
 			),
-			'ruleName2' => array(
-				'role'      => 'admin'
-			),
-			'ruleName3' => array(
-				'role'      => array('user','manager'),
-				'resource'  => 'blog',
-				'privilege' => array('delete','edit')
-			)
+			// 'ruleName2' => array(
+				// 'role'      => 'admin'
+			// ),
+			// 'ruleName3' => array(
+				// 'role'      => array('user','manager'),
+				// 'resource'  => 'blog',
+				// 'privilege' => array('delete','edit')
+			// )
 		),
 		'deny' => array
 		(

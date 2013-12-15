@@ -44,6 +44,16 @@
 
 abstract class Kohana_ACL {
 
+	// Privileges
+	const CREATE 	= 'create';
+	const READ 		= 'read';
+	const UPDATE 	= 'update';
+	const DELETE 	= 'delete';
+
+	// permission types
+	const ALLOW 	= 'allow';
+	const DENY 		= 'deny';
+
 	/**
 	 * @var object
 	 */
@@ -162,8 +172,8 @@ abstract class Kohana_ACL {
 	 */
 	public function load()
 	{
-		$driver = (isset($this->config['data_source_driver']))
-			? $this->config['data_source_driver']
+		$driver = (isset($this->_config['data_source_driver']))
+			? $this->_config['data_source_driver']
 			: 'config';
 
 		$driver = 'ACL_Source_'.UTF8::ucfirst($driver);
@@ -265,7 +275,7 @@ abstract class Kohana_ACL {
 		// retrieve user
 		$role = ($user = $this->_auth->get_user()) ? $user : $this->_config['guest_role'];
 
-		$result = $this->is_allowed($role,$resource,$privilege);
+		$result = $this->is_allowed($role, $resource, $privilege);
 
 		if ( ! $exception OR $result === TRUE )
 		{
