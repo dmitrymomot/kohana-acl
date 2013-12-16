@@ -68,7 +68,7 @@ abstract class Kohana_ACL {
 	{
 		if ( ! static::$_instance instanceof static)
 		{
-			static::$_instance = new static;
+			static::$_instance = new static(TRUE);
 		}
 
 		return static::$_instance;
@@ -146,20 +146,27 @@ abstract class Kohana_ACL {
 	/**
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct($init = FALSE)
 	{
-		$this->_config 		= Kohana::$config->load('acl');
-		$this->_guest_role 	= $this->_config['guest_role'];
-		$this->_auth 		= Auth::instance();
-
-		// Add Guest Role as role
-		if ( ! array_key_exists($this->_config['guest_role'], $this->_config['roles']))
+		if ($init)
 		{
-			$this->add_role($this->_config['guest_role']);
-		}
+			$this->_config 		= Kohana::$config->load('acl');
+			$this->_guest_role 	= $this->_config['guest_role'];
 
-		// Load ACL data
-		$this->load();
+			$instance = new ReflectionMethod($this->_config->lib['class'], 'instance');
+			$params   = Arr::get($this->_config->lib, 'params', array());
+
+			$this->_auth = $instance->invokeArgs(NULL, $params);
+
+			// Add Guest Role as role
+			if ( ! array_key_exists($this->_config['guest_role'], $this->_config['roles']))
+			{
+				$this->add_role($this->_config['guest_role']);
+			}
+
+			// Load ACL data
+			$this->load();
+		}
 	}
 
 	/**

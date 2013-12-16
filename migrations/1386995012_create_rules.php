@@ -29,9 +29,10 @@ class Create_Rules extends Migration
 			)
 		);
 
-		$this->add_index($table_name, 'uniq_record', array('role_id', 'resource_id', 'privilege'), 'unique');
+		$this->add_index($table_name, 'uniq_record', array('type', 'role_id', 'resource_id', 'privilege'), 'unique');
 
 		$this->execute("
+			INSERT INTO `".$table_name."` (`type`, `role_id`, `resource_id`, `privilege`) VALUES('allow', 0, 0, 'read');
 			INSERT INTO `".$table_name."` (`type`, `role_id`, `resource_id`, `privilege`) VALUES('allow', 1, 1, 'read');
 			INSERT INTO `".$table_name."` (`type`, `role_id`, `resource_id`, `privilege`) VALUES('allow', 1, 2, 'read');
 			INSERT INTO `".$table_name."` (`type`, `role_id`, `resource_id`, `privilege`) VALUES('allow', 1, 2, 'create');
