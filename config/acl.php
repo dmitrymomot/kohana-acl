@@ -3,6 +3,23 @@
 return array(
 
 	/**
+	 * The Authentication library to use
+	 * Make sure that the library supports:
+	 * 1) A get_user method that returns FALSE when no user is logged in
+	 *          and a user object that implements Acl_Role_Interface when a user is logged in
+	 * 2) A static instance method to instantiate a Authentication object
+	 *
+	 * array(CLASS_NAME,array $arguments)
+	 */
+	'lib' => array(
+		'class'  => 'ACL_Auth',
+		'params' => array(
+				'name' => 'get_user',
+				'name' => 'get_role_id',
+		)
+	),
+
+	/**
 	 * Data source driver
 	 * config, database or any driver that implements ACL_Source_Interface
 	 */
@@ -35,7 +52,7 @@ return array(
 	'roles' => array
 	(
 		// ADD YOUR OWN ROLES HERE
-		'user' => 'guest'
+		// 'user' => 'guest'
 	),
 
 	/*
@@ -51,7 +68,7 @@ return array(
 	'resources' => array
 	(
 		// ADD YOUR OWN RESOURCES HERE
-		'blog'	=>	NULL
+		// 'blog'	=>	NULL
 	),
 
 	/*
@@ -70,11 +87,11 @@ return array(
 			/*
 			 * ADD YOUR OWN ALLOW RULES HERE
 			 */
-			'ruleName1' => array(
-				'role'      => 'guest',
-				'resource'  => 'blog',
-				'privilege' => 'read'
-			),
+			// 'ruleName1' => array(
+				// 'role'      => 'guest',
+				// 'resource'  => 'blog',
+				// 'privilege' => 'read'
+			// ),
 			// 'ruleName2' => array(
 				// 'role'      => 'admin'
 			// ),
