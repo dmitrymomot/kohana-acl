@@ -14,8 +14,8 @@ return array(
 	'lib' => array(
 		'class'  => 'ACL_Auth',
 		'params' => array(
-				'name' => 'get_user',
-				'name' => 'get_role_id',
+			'name' => 'get_user',
+			'name' => 'get_role_id',
 		)
 	),
 

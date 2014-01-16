@@ -2,13 +2,13 @@
 
 ACL module for Kohana >= 3.3 based on [Wouterrr/ACL](https://github.com/Wouterrr/ACL) + [Wouterrr/A2](https://github.com/Wouterrr/A2)
 
-##Dependencies
+###Dependencies
 
-[kohana-pack/timestamped-migrations](https://github.com/kohana-pack/timestamped-migrations)
-[kohana/database](https://github.com/kohana/database)
-[kohana/auth](https://github.com/kohana/auth)
+- [Kohana-pack/Timestamped-Migrations](https://github.com/kohana-pack/timestamped-migrations)
+- [Kohana/Database](https://github.com/kohana/database)
+- [Kohana/Auth](https://github.com/kohana/auth)
 
-##Installation
+###Installation
 
 First off, download and enable the module in your bootstrap.
 
@@ -30,7 +30,7 @@ Add resource
 <pre>
 ACL::instance()->add_resource('news');
 </pre>
-Add role
+Add roles
 <pre>
 ACL::instance()->add_role('guest');
 ACL::instance()->add_role('member');
@@ -59,9 +59,18 @@ Check permissions for current user
 ACL::check('news', 'edit'); // return boolean value
 </pre>
 
-Check permissions for any user
+Check permissions for any role
 <pre>
 ACL::instance()->is_allowed('guest', 'news', 'comment');
 ACL::instance()->is_allowed('editor', 'news', 'add');
 ACL::instance()->is_allowed('admin', 'news', 'delete');
 </pre>
+
+
+###Drivers
+
+####Use Auth as driver
+See [demo application](https://github.com/dimkof/kohana-acl-demo-with-auth)
+
+####Creating new driver
+For example see [default driver](https://github.com/dimkof/kohana-acl/blob/3.3/master/classes/Kohana/ACL/Auth.php)
