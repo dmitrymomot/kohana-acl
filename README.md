@@ -34,6 +34,7 @@ Add roles
 <pre>
 ACL::instance()->add_role('guest');
 ACL::instance()->add_role('member');
+ACL::instance()->add_role('editor');
 ACL::instance()->add_role('admin');
 </pre>
 Allow "guest" to "view" the news
@@ -73,4 +74,5 @@ ACL::instance()->is_allowed('admin', 'news', 'delete');
 See [demo application](https://github.com/dimkof/kohana-acl-demo-with-auth)
 
 ####Creating new driver
+Class must implement interface ACL_Auth_Interface.
 For example see [default driver](https://github.com/dimkof/kohana-acl/blob/3.3/master/classes/Kohana/ACL/Auth.php)
