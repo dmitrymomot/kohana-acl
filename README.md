@@ -72,6 +72,7 @@ ACL::instance()->is_allowed('admin', 'news', 'delete');
 
 ####Use Auth as driver
 See [demo application](https://github.com/dimkof/kohana-acl-demo-with-auth)
+Or use default driver which is wrapper for Auth.
 
 ####Creating new driver
 Class must implement interface ACL_Auth_Interface.
