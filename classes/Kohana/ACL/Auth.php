@@ -1,5 +1,9 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
+/**
+ * This class is wrapper for Auth
+ * and used as the auth driver of module ACL.
+ */
 class Kohana_ACL_Auth implements ACL_Auth_Interface {
 
 	/**
