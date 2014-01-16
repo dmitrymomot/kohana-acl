@@ -25,22 +25,32 @@ $ ./minion db:migrate --module=kohana-acl
 
 ###Usage
 
-####Simple usage
+####Simple usage without file config or database
+Add resource
 <pre>
-// Add resource
 ACL::instance()->add_resource('news');
-// Add role
+</pre>
+Add role
+<pre>
 ACL::instance()->add_role('guest');
 ACL::instance()->add_role('member');
 ACL::instance()->add_role('admin');
-// Allow "guest" to "view" the news
+</pre>
+Allow "guest" to "view" the news
+<pre>
 ACL::instance()->allow('guest', 'news', 'view');
-// Allow "member" to "comment" on "news"
+</pre>
+Allow "member" to "comment" on "news"
+<pre>
 ACL::instance()->allow('member', 'news', 'comment');
-// Allow "editor" to do anything, except "delete" news
+</pre>
+Allow "editor" to do anything, except "delete" news
+<pre>
 ACL::instance()->allow('editor', 'news');
 ACL::instance()->deny('editor', 'news', 'delete');
-// Allow "admin" to do anything
+</pre>
+Allow "admin" to do anything
+<pre>
 ACL::instance()->allow('admin');
 </pre>
 
