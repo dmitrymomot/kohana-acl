@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
 
-class Kohana_ACL_Auth implements ACL_Role_Interface {
+class Kohana_ACL_Auth implements ACL_Auth_Interface {
 
 	/**
 	 * This class instance

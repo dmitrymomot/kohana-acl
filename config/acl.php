@@ -4,19 +4,9 @@ return array(
 
 	/**
 	 * The Authentication library to use
-	 * Make sure that the library supports:
-	 * 1) A get_user method that returns FALSE when no user is logged in
-	 *          and a user object that implements Acl_Role_Interface when a user is logged in
-	 * 2) A static instance method to instantiate a Authentication object
-	 *
-	 * array(CLASS_NAME,array $arguments)
 	 */
 	'lib' => array(
 		'class'  => 'ACL_Auth',
-		'params' => array(
-			'name' => 'get_user',
-			'name' => 'get_role_id',
-		)
 	),
 
 	/**
