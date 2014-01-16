@@ -572,7 +572,7 @@ abstract class Kohana_ACL {
 	 *     $acl->is_allowed('guest', 'news', 'comment');
 	 *
 	 *     // Is "member" allowed to "commment" the "news"?
-	 *     $acl->allowed('member', 'news', 'commment');
+	 *     $acl->is_allowed('member', 'news', 'commment');
 	 *
 	 * @param   mixed    single role or array of roles
 	 * @param   string   resource name
