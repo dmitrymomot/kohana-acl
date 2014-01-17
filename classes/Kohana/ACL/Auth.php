@@ -57,9 +57,11 @@ class Kohana_ACL_Auth implements ACL_Auth_Interface {
 	 *
 	 * @return object
 	 */
-	public function get_user()
+	public function get_user($default = NULL)
 	{
-		return $this;
+		$default = ($default == NULL) ? $this->_config['guest_role'] : $default;
+		$this->_user = $this->_auth->get_user($default);
+		return (is_object($this->_user)) ? $this : $default;
 	}
 
 	/**
