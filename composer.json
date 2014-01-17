@@ -4,7 +4,7 @@
 	"description": "Kohana v3 ACL",
 	"homepage":    "https://github.com/dimkof/kohana-acl",
 	"license":     "MIT",
-	"keywords":    ["kohana", "acl"],
+	"keywords":    ["kohana", "framework", "acl", "access control list"],
 	"authors": [
 		{
 			"name":     "Dmitry Momot",
