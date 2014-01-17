@@ -1,5 +1,5 @@
 {
-	"name":        "kohana-acl",
+	"name":        "dimkof/kohana-acl",
 	"version":     "3.3",
 	"type":        "kohana-module",
 	"description": "Kohana v3 ACL",
