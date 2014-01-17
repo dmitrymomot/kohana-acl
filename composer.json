@@ -1,6 +1,5 @@
 {
 	"name":        "dimkof/kohana-acl",
-	"version":     "3.3/develop",
 	"type":        "kohana-module",
 	"description": "Kohana v3 ACL",
 	"homepage":    "https://github.com/dimkof/kohana-acl",
@@ -24,7 +23,7 @@
     "extra": {
         "branch-alias": {
 			"dev-3.3/develop": "3.3.x-dev",
-			"dev-3.4/develop": "3.4.x-dev"
+			"dev-3.3/master": "3.3.x"
         }
     }
 }
