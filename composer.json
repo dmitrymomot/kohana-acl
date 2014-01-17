@@ -1,6 +1,6 @@
 {
 	"name":        "dimkof/kohana-acl",
-	"version":     "3.3",
+	"version":     "3.3/master",
 	"type":        "kohana-module",
 	"description": "Kohana v3 ACL",
 	"homepage":    "https://github.com/dimkof/kohana-acl",
@@ -16,7 +16,14 @@
 	],
 
 	"require": {
-		"php": ">=5.3.2",
+		"php": ">=5.3.3",
 		"composer/installers": "*"
-	}
+	},
+
+    "extra": {
+        "branch-alias": {
+			"dev-3.3/develop": "3.3.x-dev",
+			"dev-3.4/develop": "3.4.x-dev"
+        }
+    }
 }
