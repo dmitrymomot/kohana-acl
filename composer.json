@@ -2,7 +2,7 @@
 	"name":        "dmitrymomot/kohana-acl",
 	"type":        "kohana-module",
 	"description": "Kohana v3 ACL",
-	"homepage":    "https://github.com/dimkof/kohana-acl",
+	"homepage":    "http://dmitrymomot.com/",
 	"license":     "MIT",
 	"keywords":    ["kohana", "framework", "acl", "access control list"],
 	"authors": [
