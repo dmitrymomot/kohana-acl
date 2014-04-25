@@ -1,5 +1,5 @@
 {
-	"name":        "dimkof/kohana-acl",
+	"name":        "dmitrymomot/kohana-acl",
 	"type":        "kohana-module",
 	"description": "Kohana v3 ACL",
 	"homepage":    "https://github.com/dimkof/kohana-acl",
